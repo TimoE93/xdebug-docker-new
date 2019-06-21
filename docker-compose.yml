@@ -1,0 +1,29 @@
+version: '3'
+services:
+    php-apache:
+        build:
+            context: ./php-apache
+        ports:
+            - 80:80
+        volumes:
+            - ./DocumentRoot:/var/www/html
+        links:
+            - 'mariadb'
+        environment:
+          XDEBUG_CONFIG: remote_host=192.168.1.211    
+    mariadb:
+        image: mariadb:10.1
+        volumes:
+            - mariadb:/var/lib/mysql
+        environment:
+            TZ: "Europe/Rome"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_USER: 'root'
+            MYSQL_PASSWORD: 'root'
+            MYSQL_DATABASE: 'tiki'
+# named Volume -> wenn ordner leer kopiert docker die dateien von container auf den host
+# ohne named volume wird der ordner von host in container gemounted und wäre leer
+# wird irgendwo im host gespeichert docker volume ls; docker volume inspect {name des volumes}
+volumes:
+    mariadb:
